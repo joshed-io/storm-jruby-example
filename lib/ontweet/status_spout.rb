@@ -17,7 +17,7 @@ class StatusSpout < RedStorm::DSL::Spout
     end
 
     Thread.new {
-      client.filter(:track => "2chainz") do |tweet|
+      client.filter(:track => ENV['KEYWORD'] || "horse") do |tweet|
         tweets.push(tweet.text)
       end
     }
