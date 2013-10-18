@@ -1,5 +1,6 @@
 require 'red_storm'
 require 'twitter'
+require 'jruby/synchronized'
 
 class StatusSpout < RedStorm::DSL::Spout
   tweets = ThreadSafe::Array.new
@@ -18,7 +19,11 @@ class StatusSpout < RedStorm::DSL::Spout
 
     Thread.new {
       client.filter(:track => ENV['KEYWORD'] || "horse") do |tweet|
-        tweets.push(tweet.text)
+        begin
+          tweets.push(tweet.text)
+        rescue => e
+          puts "pooped #{e}"
+        end
       end
     }
   end
